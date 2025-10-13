@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:starter/core/theme/app_theme.dart';
 
 class LoginPage extends StatelessWidget {
@@ -17,7 +18,7 @@ class LoginPage extends StatelessWidget {
 
             ),
             SizedBox(height: 20),
-            ElevatedButton(onPressed: () {}, child: Text("clock"),
+            ElevatedButton(onPressed: () {}, child: Text("text".tr),
             style: AppTheme.filledButtonStyle
               ,),
             SizedBox(height: 20),

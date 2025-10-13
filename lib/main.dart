@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get_navigation/src/root/internacionalization.dart';
 import 'package:starter/splash_screen/splash_screen.dart';
 
+import 'core/config/translations.dart';
 import 'core/di/di.dart';
 import 'core/theme/app_theme.dart';
 
@@ -17,9 +19,14 @@ class MyApp extends StatelessWidget {
 
   // This widget is the root of your application.
   @override
+
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Flutter Demo',
+
+      translations: AppTranslation(),
+      locale: Locale('ar', 'SA'),
+      fallbackLocale: Locale('ar', 'SA'),
 
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
