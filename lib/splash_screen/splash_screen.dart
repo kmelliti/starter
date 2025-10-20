@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:starter/core/di/di.dart';
+import 'package:starter/screens/forget_pass1.dart';
+import 'package:starter/screens/login/presentation/pages/log_in.dart';
+import 'package:starter/screens/login/presentation/pages/sign_up2.dart';
 
-import '../screens/login/presentation/pages/login_page.dart';
+import '../screens/login/presentation/pages/sign_up1.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -16,10 +19,9 @@ class SplashScreen extends StatelessWidget {
       body: FutureBuilder(
         future: checkUser(),
         builder: (context, snap) {
-          if(snap.hasData){
-            WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_){
-
-              Get.to(()=> LoginPage());
+          if (snap.hasData) {
+            WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_) {
+              Get.to(() => LoginPage());
             });
           }
           return Center(child: Text("Welcome"));
