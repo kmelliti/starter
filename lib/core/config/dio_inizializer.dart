@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:starter/core/services/app_service.dart';
 
+import '../di/di.dart';
 import 'app_constants.dart';
 
 class DioInitializer {
@@ -35,10 +37,11 @@ class DioInitializer {
         //   "lang",
         //   () => appController.getAppLanguage() ?? "en",
         // );
-        // request.headers.putIfAbsent(
-        //   "Authorization",
-        //   () => "Bearer ${appController.getUserAuthFromSp()?.token}",
-        // );
+        final AppServices appServices = getIt();
+        request.headers.putIfAbsent(
+          "Authorization",
+          () => "Bearer ${appServices.getToken()}",
+        );
 
         return handler.next(request);
       },

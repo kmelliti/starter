@@ -5,14 +5,14 @@ import 'package:starter/core/config/utils.dart';
 import 'package:starter/screens/forget_pass1.dart';
 import 'sign_up1.dart'; // For navigation to the registration step
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SignIn extends StatefulWidget {
+  const SignIn({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignIn> createState() => _SignInState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignInState extends State<SignIn> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();

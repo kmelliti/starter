@@ -5,6 +5,7 @@ import 'package:starter/splash_screen/splash_screen.dart';
 
 import 'core/config/translations.dart';
 import 'core/di/di.dart';
+import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
 
 Future<void> main() async {
@@ -28,7 +29,8 @@ class MyApp extends StatelessWidget {
 
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      initialRoute: AppRoutes.splash,
+      getPages: AppRoutes.routes,
     );
   }
 }

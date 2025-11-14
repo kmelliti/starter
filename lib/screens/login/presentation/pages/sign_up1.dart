@@ -40,7 +40,7 @@ class _SignUpPage1State extends State<SignUpPage1> {
                     children: [
                       IconButton(
                         onPressed: () {
-                          Get.to(() => const LoginPage());
+                          Get.to(() => const SignIn());
                         },
                         icon: const Icon(
                           Icons.arrow_circle_right_outlined,
