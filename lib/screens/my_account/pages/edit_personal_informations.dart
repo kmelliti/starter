@@ -50,6 +50,7 @@ class _EditPersonalInformationState extends State<EditPersonalInformation> {
       _birthdayController.text = df.format(user.birthdate!);
     _emailController.text = user.email;
     _phoneNumberController.text = user.phone;
+    gender = user.gender;
 
     super.initState();
   }
@@ -182,7 +183,7 @@ class _EditPersonalInformationState extends State<EditPersonalInformation> {
                           decoration: InputDecoration(labelText: 'gender'.tr),
                           items: genderList
                               .map((e) =>
-                              DropdownMenuItem(value: e, child: Text(e)))
+                              DropdownMenuItem(value: e, child: Text("$e".tr)))
                               .toList(),
                           onChanged: (value) {
                             gender = value;
@@ -213,13 +214,10 @@ class _EditPersonalInformationState extends State<EditPersonalInformation> {
                                   isLoading.value= true;
                                   try{
                                     await _controller.updateUserParams(params);
-                                  }catch(e,s){
+                                  }catch( e,s){
 
-                                    if(e is ApiException){
-                                      showErrorDialog(context, e.message);
-                                    }else{
-                                      showErrorDialog(context);
-                                    }
+
+                                    handleException(context,e);
                                   }
                                   isLoading.value = false;
                                 }

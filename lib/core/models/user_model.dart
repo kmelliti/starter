@@ -52,10 +52,10 @@ class UserModel {
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
     id: json["id"],
     name: json["name"],
-    picture: json["picture"],
+    picture:json["picture"]== null ? null : json["picture"],
     phone: json["phone"],
     email: json["email"],
-    birthdate: df.parse(json["birthdate"]),
+    birthdate:json["birthdate"] == null ? null : df.parse(json["birthdate"]),
     gender: json["gender"],
     role: json["role"],
     kycStatus: json["kyc_status"],
@@ -75,7 +75,7 @@ class UserModel {
     "picture": picture,
     "phone": phone,
     "email": email,
-    "birthdate":birthdate != null ? df.format(birthdate) : nu,
+    "birthdate":birthdate != null ? df.format(birthdate!) : null,
     "gender": gender,
     "role": role,
     "kyc_status": kycStatus,
@@ -95,7 +95,7 @@ class Merchant {
   int userId;
   int categoryId;
   String companyName;
-  String picture;
+  String? picture;
   String tradeLicenseNumber;
   String address;
   String taxCertificate;
@@ -142,7 +142,7 @@ class Merchant {
     userId: json["user_id"],
     categoryId: json["category_id"],
     companyName: json["company_name"],
-    picture: json["picture"],
+    picture: json["picture"] == null ? null : json["picture"],
     tradeLicenseNumber: json["trade_license_number"],
     address: json["Address"],
     taxCertificate: json["tax_certificate"],

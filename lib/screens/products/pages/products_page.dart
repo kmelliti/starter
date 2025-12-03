@@ -44,7 +44,7 @@ class _ProductsPageState extends State<ProductsPage> {
         WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((timeStamp) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text("swipe_to_delete".tr),
+              content: Text("click_image_for_options".tr),
               duration: Duration(seconds: 3),
             ),
           );
@@ -164,32 +164,16 @@ class _ProductsPageState extends State<ProductsPage> {
                         // [transitionDuration] has a default value of 250 milliseconds.
                         transitionDuration: const Duration(milliseconds: 500),
                         itemBuilder:
-                            (context, item, index) => Dismissible(
-                              key: ValueKey(item.id),
-                              background: Container(
-                                alignment: Alignment.centerRight,
-                                padding: EdgeInsets.only(right: 20),
-                                decoration: BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(30),
-                                    bottomRight: Radius.circular(30),
-                                  ),
-                                ),
-                                child: Icon(Icons.delete, color: Colors.red),
-                              ),
-                              onDismissed: (direction) async{
-
-                              final  res  = await showDeleteAlert(context);
-                              if(res == true){
-                               await _controller.deleteProduct(item.id.toString());
-                                _pagingController.refresh();
-                              }else{
-                                _pagingController.refresh();
-                              }
-
+                            (context, item, index) => InkWell(
+                              onTap: (){
+                                Get.toNamed(AppRoutes.productDetails,arguments: item);
                               },
-                              child: SingleProductWidget(item),
+                              child: SingleProductWidget(item,onEdit: ()async {
+                                final res = await Get.toNamed(AppRoutes.addProduct,arguments: [item]);
+
+                              }, onDelete: () async{
+                                await deleteItem(context, item);
+                              },),
                             ),
                       ),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -221,5 +205,15 @@ class _ProductsPageState extends State<ProductsPage> {
         ),
       ),
     );
+  }
+
+  Future<void> deleteItem(BuildContext context, ProductModel item) async {
+           final  res  = await showDeleteAlert(context);
+    if(res == true){
+     await _controller.deleteProduct(item.id.toString());
+      _pagingController.refresh();
+    }else{
+      _pagingController.refresh();
+    }
   }
 }

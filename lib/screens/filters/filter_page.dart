@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,8 +9,19 @@ import 'package:get/get.dart';
 import '../../core/config/utils.dart';
 import '../../core/theme/app_theme.dart';
 
+enum Status {
+  draft,
+  open,
+  funded,
+  active,
+  closed,
+  cancelled
+}
+
+typedef FilterCallback = void Function(Map<String,dynamic> filters);
 class Filters extends StatefulWidget {
-  const Filters({super.key});
+  const Filters({super.key, required this.onFilter});
+  final FilterCallback onFilter;
 
   @override
   State<Filters> createState() => _FiltersState();
@@ -18,14 +31,15 @@ class _FiltersState extends State<Filters> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
   List<String> items = [];
   RangeValues _currentPriceRangeValues = const RangeValues(0, 100);
-  RangeValues _quantityRangeValues = const RangeValues(0, 50);
+  RangeValues _quantityRangeValues = const RangeValues(0, 100000);
   RangeValues _reqQuantityRangeValues = const RangeValues(0, 20);
   bool discounted = false;
   String? selectedCategory;
+  Map<String,dynamic> filters = {};
 
   @override
   void initState() {
-    // TODO: implement initState
+
     super.initState();
     Future.delayed(Duration(milliseconds: 300), () {
       addItems();
@@ -33,7 +47,7 @@ class _FiltersState extends State<Filters> {
   }
 
   void addItems() {
-    List<String> newItems = ["rejected".tr, "accepted".tr, "onHold".tr];
+    List<String> newItems = Status.values.map((e) => e.name).toList();
 
     for (int i = 0; i < newItems.length; i++) {
       Future.delayed(Duration(milliseconds: i * 200), () {
@@ -54,7 +68,7 @@ class _FiltersState extends State<Filters> {
 
           quantityRange(),
           SizedBox(height: 10),
-          getCategoryFilter(),
+          getStatusFilters(),
         ],
       ),
     );
@@ -134,7 +148,7 @@ class _FiltersState extends State<Filters> {
           c: RangeSlider(
             values: _quantityRangeValues,
             min: 0,
-            max: 100,
+            max:100000,
             inactiveColor: HexColor.fromHex("#DEDDFF"),
             activeColor: HexColor.fromHex(AppTheme.primaryColor),
             labels: RangeLabels(
@@ -171,7 +185,16 @@ class _FiltersState extends State<Filters> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ElevatedButton(onPressed: () {}, child: Text("apply_filers".tr)),
+          ElevatedButton(onPressed: () {
+
+            filters.putIfAbsent("quantity_min", ()=> _quantityRangeValues.start);
+            filters.putIfAbsent("quantity_max", ()=> _quantityRangeValues.end);
+            if(selectedCategory != null){
+              filters.putIfAbsent("status", ()=> selectedCategory);
+            }
+            widget.onFilter(filters);
+            Get.back();
+          }, child: Text("apply_filers".tr)),
           TextButton(
             onPressed: () {},
             child: Text(
@@ -188,7 +211,7 @@ class _FiltersState extends State<Filters> {
     );
   }
 
-  getCategoryFilter() {
+  getStatusFilters() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20),
       width: double.infinity,
@@ -196,7 +219,7 @@ class _FiltersState extends State<Filters> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "category".tr,
+            "status_deal".tr,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               color: HexColor.fromHex("#1E1D33"),
               fontSize: 16,
@@ -233,13 +256,14 @@ class _FiltersState extends State<Filters> {
                       onTap: () {
                         setState(() {
                           selectedCategory = items[index];
+                          log("message ${selectedCategory}");
                         });
                       },
                       child: Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(items[index]),
+                            Text(items[index].tr),
                             selectedCategory == items[index]
                                 ? Icon(
                               Icons.check,

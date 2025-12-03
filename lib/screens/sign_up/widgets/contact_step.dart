@@ -100,6 +100,9 @@ class _ContactStepState extends State<ContactStep> {
               if (value == null || value.isEmpty) {
                 return 'field_is_required'.tr;
               }
+              if(!isValidSaudiPhone(value)){
+                return 'invalid_phone_number'.tr;
+              }
               return null;
             },
           ),
@@ -125,9 +128,7 @@ class _ContactStepState extends State<ContactStep> {
                 if (value == null) {
                   return;
                 }
-                _birthdayController.text = DateFormat(
-                  'dd-MM-yyyy',
-                ).format(value);
+                _birthdayController.text = df.format(value);
               });
             },
             validator: (value) {

@@ -24,7 +24,7 @@ class ProductModel {
   DateTime createdAt;
   DateTime updatedAt;
   List<ProductPicture> productPictures;
-  ProductCategorie productCategorie;
+  ProductCategorie? productCategorie;
 
   ProductModel({
     required this.id,
@@ -61,7 +61,7 @@ class ProductModel {
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
     productPictures: List<ProductPicture>.from(json["product_pictures"].map((x) => ProductPicture.fromJson(x))),
-    productCategorie: ProductCategorie.fromJson(json["product_categorie"]),
+    productCategorie: json["product_categorie"] == null ? null : ProductCategorie.fromJson(json["product_categorie"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -80,7 +80,7 @@ class ProductModel {
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
     "product_pictures": List<dynamic>.from(productPictures.map((x) => x.toJson())),
-    "product_categorie": productCategorie.toJson(),
+    "product_categorie": productCategorie?.toJson(),
   };
 }
 

@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/config/utils.dart';
+import '../../../core/di/di.dart';
 import '../../../core/theme/app_theme.dart';
+import '../controller/reset_password_controller.dart';
 
 
 typedef OnNextTap = void Function();
@@ -19,6 +21,8 @@ class ResetStepTwo extends StatefulWidget {
 }
 
 class _ResetStepTwoState extends State<ResetStepTwo> {
+  final ResetPasswordController _controller = getIt();
+
   final List<TextEditingController> _codeControllers = List.generate(
     4,
     (index) => TextEditingController(),
@@ -104,7 +108,6 @@ class _ResetStepTwoState extends State<ResetStepTwo> {
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.number,
                     maxLength: 1,
-
                     decoration: InputDecoration(
                       counterText: '',
                       hintText: "-",
@@ -140,8 +143,15 @@ class _ResetStepTwoState extends State<ResetStepTwo> {
             fontWeight: FontWeight.w500,
           ),),
           TextButton(
-            onPressed: () {
-              // TODO: Resend code functionality
+            onPressed: () async{
+
+              try {
+                String code = await _controller.codeResetPassword(_controller.userContacts!);
+                _controller.code = code;
+
+              } catch (e, s) {
+                handleException(context, e);
+              }
               setState(() {
                 _start = 60; // Reset timer
               });
@@ -162,8 +172,13 @@ class _ResetStepTwoState extends State<ResetStepTwo> {
               );
               if (allFilled) {
                 final code = getCode();
-                widget.onNextTap();
-                // TODO: Send code to server
+                if(code == _controller.code){
+                  widget.onNextTap();
+
+                }else{
+                  showErrorDialog(context,"wrong_code".tr);
+                }
+
                 print('Verification code: $code');
               }
             },

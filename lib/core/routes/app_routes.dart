@@ -9,8 +9,10 @@ import 'package:starter/screens/products/pages/add_new_product.dart';
 import 'package:starter/screens/sign_up/presentation/pages/sign_up.dart';
 
 import '../../screens/deals/pages/deal_details.dart';
+import '../../screens/location/pages/location_list.dart';
 import '../../screens/login/presentation/pages/log_in.dart';
 import '../../screens/main_screen/pages/main_screen.dart';
+import '../../screens/products/pages/product_details.dart';
 import '../../screens/products/pages/products_page.dart';
 import '../../screens/reset_password/pages/reset_password.dart';
 import '../../splash_screen/splash_screen.dart';
@@ -32,6 +34,8 @@ class AppRoutes {
   static const String bankList = '/bank_list';
   static const String contacts = '/contacts';
   static const String resetPassword = '/reset_password';
+  static const String locations = '/locations';
+  static const String productDetails = '/productDetails';
 
 
   static final routes = [
@@ -41,12 +45,14 @@ class AppRoutes {
      GetPage(name: products, page: () =>  ProductsPage()),
      GetPage(name: addProduct, page: () =>  AddNewProduct()),
      GetPage(name: dealDetails, page: () =>  DealDetails()),
+     GetPage(name: productDetails, page: () =>  ProductDetails()),
     GetPage(name: signUp, page: () =>  SignUp()),
     GetPage(name: editPersonalInfo, page: () =>  EditPersonalInformation()),
     GetPage(name: editCompanyInfo, page: () =>  EditCompanyInformation()),
     GetPage(name: bankList, page: () =>  BankList()),
     GetPage(name: contacts, page: () =>  ContactLinksPage()),
     GetPage(name: resetPassword, page: () =>  ResetPassword()),
-    //GetPage(name: resetPassword, page: () =>  ResetPassword()),
+    GetPage(name: locations, page: () =>  LocationList()),
+
   ];
 }

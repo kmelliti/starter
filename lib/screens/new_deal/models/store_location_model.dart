@@ -4,11 +4,13 @@
 
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
+
 List<StoreLocationModel> storeLocationModelFromJson(String str) => List<StoreLocationModel>.from(json.decode(str).map((x) => StoreLocationModel.fromJson(x)));
 
 String storeLocationModelToJson(List<StoreLocationModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class StoreLocationModel {
+class StoreLocationModel extends Equatable{
   int id;
   int merchantId;
   int cityId;
@@ -50,4 +52,8 @@ class StoreLocationModel {
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
   };
+
+  @override
+
+  List<Object?> get props => [id];
 }

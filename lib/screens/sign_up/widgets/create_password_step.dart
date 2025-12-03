@@ -36,6 +36,7 @@ class CreatePasswordStep extends StatelessWidget {
         children: [
           SizedBox(height: 30),
           TextFormField(
+            obscureText: true,
             controller: _passwordController,
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -50,6 +51,8 @@ class CreatePasswordStep extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           TextFormField(
+            obscureText: true,
+
             controller: _passwordConfirmationController,
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -99,7 +102,7 @@ class CreatePasswordStep extends StatelessWidget {
                           onPressed: () async {
 
                             log(_signUpController.accountCreationParams.toJson().toString());
-                            return;
+
                             if (_formKey.currentState!.validate()) {
                               _signUpController.accountCreationParams.password =
                                   _passwordController.text;
@@ -113,7 +116,8 @@ class CreatePasswordStep extends StatelessWidget {
                                 );
                                 _signUpController.showSuccessDialog(context);
                               } catch (e, s) {
-                                showErrorDialog(context, "error_body".tr);
+                                handleException(context, e);
+
 
                                 log(e.toString());
                                 log(s.toString());

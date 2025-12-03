@@ -13,6 +13,7 @@ import 'package:starter/screens/products/controller/products_controller.dart';
 
 import '../../screens/home_page/controller/home_page_controller.dart';
 import '../../screens/main_screen/controller/main_screen_controller.dart';
+import '../../screens/reset_password/controller/reset_password_controller.dart';
 import '../../screens/sign_up/presentation/controller/sign_up_controller.dart';
 import '../services/auth_services.dart';
 
@@ -40,9 +41,10 @@ Future<void> setup() async {
   getIt.registerLazySingleton(()=> SignUpController(getIt()));
   getIt.registerLazySingleton(()=> MainScreenController());
   getIt.registerLazySingleton(()=> HomePageServices(getIt()));
-  getIt.registerLazySingleton(()=> HomePageController(getIt()));
+  getIt.registerLazySingleton(()=> HomePageController(getIt(), getIt()));
   getIt.registerLazySingleton(()=> MyAccountServices(getIt()));
   getIt.registerLazySingleton(()=> MyAccountController(getIt()));
+  getIt.registerLazySingleton(()=> ResetPasswordController(getIt()));
 
 
 }

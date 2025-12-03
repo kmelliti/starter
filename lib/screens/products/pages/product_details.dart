@@ -6,26 +6,27 @@ import 'package:starter/core/config/app_constants.dart';
 import 'package:starter/core/config/utils.dart';
 import 'package:starter/screens/deals/widgets/slider_image.svg.dart';
 import 'package:starter/screens/home_page/controller/home_page_controller.dart';
+import 'package:starter/screens/products/models/product_model.dart';
 
 import '../../../core/di/di.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../home_page/models/deal_model.dart';
 import '../../new_deal/models/store_location_model.dart';
 
-class DealDetails extends StatefulWidget {
-  const DealDetails({super.key});
+class ProductDetails extends StatefulWidget {
+  const ProductDetails({super.key});
 
   @override
-  State<DealDetails> createState() => _DealDetailsState();
+  State<ProductDetails> createState() => _ProductDetailsState();
 }
 
-class _DealDetailsState extends State<DealDetails> {
-  late DealModel deal;
+class _ProductDetailsState extends State<ProductDetails> {
+  late ProductModel product;
   final HomePageController _homePageController = getIt();
 
   @override
   void initState() {
-    deal = Get.arguments;
+    product = Get.arguments;
     super.initState();
   }
 
@@ -39,189 +40,60 @@ class _DealDetailsState extends State<DealDetails> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 30),
-              pushUpAnimation(
-                Row(
-                  children: [
-                    Text(
-                      "deal_id".tr,
-                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: HexColor.fromHex("#B4B4B4"),
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.2,
-                        fontSize: 16,
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      "#${deal.id}",
-                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                        color: HexColor.fromHex(AppTheme.primaryColor),
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.2,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Spacer(),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        deal.status,
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 30),
-              Row(
-                children: [
-                  Expanded(
-                    child: sideInAnimation(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 15,
-                          vertical: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: HexColor.fromHex("#F9F9F9"),
-                          borderRadius: BorderRadius.circular(40),
-                          border: Border.all(
-                            color: HexColor.fromHex("#E8E5E5"),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset("assets/icons/pin.svg", width: 15),
-                            SizedBox(width: 7),
-                            Text(
-                              "update_location".tr,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.titleMedium?.copyWith(
-                                color: HexColor.fromHex(AppTheme.primaryColor),
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.2,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: sideInAnimation(
-                      child: InkWell(
-                        onTap: () {
-                          _homePageController. showCloseDealAlert(context,deal.id.toString());
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 5,
-                          ),
-                          decoration: BoxDecoration(
-                            color: HexColor.fromHex("#F9F9F9"),
-                            borderRadius: BorderRadius.circular(40),
-                            border: Border.all(
-                              color: HexColor.fromHex("#E8E5E5"),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "end_deal".tr,
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.titleMedium?.copyWith(
-                                  color: HexColor.fromHex(
-                                    AppTheme.primaryColor,
-                                  ),
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.2,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              SizedBox(width: 7),
-                              Icon(
-                                Icons.close,
-                                color: HexColor.fromHex(AppTheme.primaryColor),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
               SizedBox(height: 20),
-              SliderImages(pictures: deal.product.productPictures),
+
+              SliderImages(pictures: product.productPictures),
               SizedBox(height: 20),
 
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
 
-                  border: Border.all(
-                    color: HexColor.fromHex(AppTheme.borderGrey),
-                  ),
-                ),
-                child: Text(deal.product.sku),
+                child: Text(product.name,style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                  color: HexColor.fromHex(AppTheme.primaryColor),
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.2,
+                  fontSize: 24,
+                ),),
               ),
               SizedBox(height: 10),
               Row(
                 children: [
                   Text(
-                    "${"category".tr} :",
+                    "${"category".tr}:",
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: HexColor.fromHex(AppTheme.primaryColor),
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                       letterSpacing: 0.2,
-                      fontSize: 14,
+                      fontSize: 22,
                     ),
                   ),
                   SizedBox(width: 10),
                   Text(
                     productCategories
-                            .firstWhereOrNull(
-                              (test) =>
-                                  test.id.toString() ==
-                                  deal.product.productCategorieId.toString(),
-                            )
-                            ?.name ??
+                        .firstWhereOrNull(
+                          (test) =>
+                      test.id.toString() ==
+                          product.productCategorieId.toString(),
+                    )
+                        ?.name ??
                         "",
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       // Text("product id",style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: HexColor.fromHex("#B3B3B3"),
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w400,
                       letterSpacing: 0.2,
-                      fontSize: 14,
+                      fontSize: 22,
                     ),
                   ),
                 ],
               ),
               SizedBox(height: 10),
               ReadMoreText(
-                deal.product.description,
+                product.description,
                 trimLines: 3,
                 colorClickableText: Colors.blue,
                 trimMode: TrimMode.Line,
+
+
                 style: TextStyle(
                   color: HexColor.fromHex("#595959"),
                   fontWeight: FontWeight.w500,
@@ -232,48 +104,8 @@ class _DealDetailsState extends State<DealDetails> {
                 trimCollapsedText: "show_more".tr,
                 trimExpandedText: "show_less".tr,
               ),
-              SizedBox(height: 40),
-              buildRowDeal(
-                context,
-                "product_number".tr,
-                deal.productId.toString(),
-                false,
-              ),
-              Divider(),
-              buildRowDeal(
-                context,
-                "price".tr,
-                deal.wholesalePrice.toString(),
-                true,
-              ),
-              Divider(),
-              buildStoreLocationRow(
-                context,
-                "stores".tr,
-                deal.locations.map((e) => e.location).toList(),
-              ),
-              Divider(),
-              buildRowDeal(
-                context,
-                "quantity_storage".tr,
-                deal.quantity.toString(),
-                false,
-              ),
-              Divider(),
-              buildRowDeal(
-                context,
-                "total_sold".tr,
-                deal.quantitySold.toString(),
-                false,
-              ),
-              Divider(),
-              buildRowDeal(
-                context,
-                "revenue".tr,
-                deal.totalInvested.toString(),
-                true,
-              ),
-              SizedBox(height: 40),
+              SizedBox(height: 20),
+
             ],
           ),
         ),
@@ -282,10 +114,10 @@ class _DealDetailsState extends State<DealDetails> {
   }
 
   Container buildStoreLocationRow(
-    BuildContext context,
-    String title,
-    List<StoreLocationModel> stores,
-  ) {
+      BuildContext context,
+      String title,
+      List<StoreLocationModel> stores,
+      ) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5),
       child: Row(
@@ -391,11 +223,11 @@ class _DealDetailsState extends State<DealDetails> {
   }
 
   Container buildRowDeal(
-    BuildContext context,
-    String title,
-    String value,
-    bool isPrice,
-  ) {
+      BuildContext context,
+      String title,
+      String value,
+      bool isPrice,
+      ) {
     return Container(
       child: Row(
         children: [
@@ -432,9 +264,9 @@ class _DealDetailsState extends State<DealDetails> {
                   isPrice ? SizedBox(width: 8) : SizedBox(),
                   isPrice
                       ? SvgPicture.asset(
-                        "assets/icons/sar.svg",
-                        color: HexColor.fromHex("#5E5D68"),
-                      )
+                    "assets/icons/sar.svg",
+                    color: HexColor.fromHex("#5E5D68"),
+                  )
                       : SizedBox(),
                 ],
               ),

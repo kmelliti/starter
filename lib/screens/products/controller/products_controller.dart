@@ -16,7 +16,7 @@ class ProductController {
     return _productService.getProducts(pageKey);
  }
 
- Future<void> addProduct(String image,Map<String,dynamic> params) async{
+ Future<void> addProduct(List<String> image,Map<String,dynamic> params) async{
     return _productService.addProduct(image, params);
  }
 

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/config/utils.dart';
+import '../../../core/di/di.dart';
 import '../../../core/theme/app_theme.dart';
+import '../controller/reset_password_controller.dart';
 
 class ResetStepThree extends StatefulWidget {
   const ResetStepThree({super.key});
@@ -18,6 +20,9 @@ class _ResetStepThreeState extends State<ResetStepThree> {
   final _confirmPasswordController = TextEditingController();
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
+  final ResetPasswordController _controller = getIt();
+  final ValueNotifier<bool> isLoading = ValueNotifier(false);
+
 
   @override
   void dispose() {
@@ -100,13 +105,31 @@ class _ResetStepThreeState extends State<ResetStepThree> {
             },
           ),
           Spacer(),
-          ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                // TODO: Handle password reset
-              }
-            },
-            child: Text('reset_password'.tr),
+          ValueListenableBuilder(
+            valueListenable: isLoading,
+            builder: (context,val,_) {
+              return val ? Center(child: getLoader(),):ElevatedButton(
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    Map<String,dynamic> params = _controller.userContacts!;
+                    params.putIfAbsent("password", ()=>_passwordController.text);
+                    params.putIfAbsent("code", ()=>_controller.code);
+                    try{
+                      isLoading.value = true;
+                       await _controller.resetPassword(params);
+                       _controller.showSuccessDialog(context);
+
+                  _controller.code = null;
+                  _controller.userContacts = null;
+                    }catch(e){
+                      handleException(context, e);
+                    }
+                    isLoading.value = false;
+                  }
+                },
+                child: Text('reset_password'.tr),
+              );
+            }
           )
         ],
       ),

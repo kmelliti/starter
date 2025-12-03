@@ -4,10 +4,15 @@ import 'package:starter/core/config/app_constants.dart';
 import '../../../core/config/utils.dart';
 import '../../../core/theme/app_theme.dart';
 import '../models/product_model.dart';
+import 'flip_widgets.dart';
 
+typedef OnEdit = void Function();
+typedef OnDelete = void Function();
 class SingleProductWidget extends StatelessWidget {
-   SingleProductWidget(this.product);
+   SingleProductWidget(this.product, {required this.onEdit, required this.onDelete});
 
+   final OnEdit onEdit;
+   final OnDelete onDelete;
   final ProductModel product;
 
   @override
@@ -15,37 +20,25 @@ class SingleProductWidget extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: HexColor.fromHex(AppTheme.borderGrey)),
+        border: Border.all(color: HexColor.fromHex(AppTheme.filledBox2)),
         borderRadius: BorderRadius.circular(30),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: double.infinity,
-            height: 100,
-
-            decoration: BoxDecoration(
-              color: HexColor.fromHex("#E8E5E5"),
-              border: Border(
-                bottom: BorderSide(color: HexColor.fromHex(AppTheme.borderGrey)),
-              ),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: product.productPictures.isEmpty?Container(): ClipRRect(
-                borderRadius: BorderRadius.circular(30),
-                child: Image.network("${baseUrlImage}${product.productPictures.first.picture}",fit: BoxFit.fitWidth,)),
-          ),
+           FlipCard(image:product.productPictures.isEmpty?null:
+           product.productPictures.first.picture, onEdit: () { onEdit(); }, onDelete: () { onDelete(); },),
           Container(
             padding: EdgeInsets.all(10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(product.name,style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                Text(product.name,maxLines:1,style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: HexColor.fromHex("#1E1D33"),
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.2,
-                  fontSize: 20,
+                  fontSize: 14,
+                  overflow: TextOverflow.ellipsis
                 ),),
                 SizedBox(height: 5,),
                 Text(
@@ -54,9 +47,9 @@ class SingleProductWidget extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: HexColor.fromHex("#1E1D33"),
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w500,
                     letterSpacing: 0.2,
-                    fontSize: 14,
+                    fontSize: 12,
                   ),
                 ),
               ],

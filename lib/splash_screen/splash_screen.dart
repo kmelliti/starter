@@ -11,6 +11,7 @@ import '../core/config/app_constants.dart';
 import '../core/di/di.dart';
 import '../core/routes/app_routes.dart';
 import '../core/services/app_service.dart';
+import '../screens/products/controller/products_controller.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -22,6 +23,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   final AppServices appServices = getIt();
+  final ProductController _productController = getIt();
 
   @override
   void initState() {
@@ -30,7 +32,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
 
     appServices.getBanks();
+    appServices.getCities();
     appServices.getMerchantCategories();
+    _productController.getProductCategories();
 
     bool isLoggedIn = appServices.getToken() != null;
 

@@ -59,6 +59,7 @@ class MyAccount extends StatelessWidget {
               }),
               SizedBox(height: 10),
               generalContainer(context,"location".tr, "assets/icons/pin.svg",(){
+                Get.toNamed(AppRoutes.locations);
 
               }),
               SizedBox(height: 10),
@@ -122,7 +123,8 @@ class MyAccount extends StatelessWidget {
               SizedBox(width: 20),
               Expanded(child: Text(title,style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 fontSize: 16,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
+                color: HexColor.fromHex("#1E1D33")
               ),)),
               Icon(
                 Icons.arrow_forward,

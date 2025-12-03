@@ -37,6 +37,26 @@ class AppServices {
     }
   }
 
+  Future<void> getCities() async {
+
+    try {
+      final response = await _dio.get(
+        'BorsaNow/public/api/v1/general/cities/${getLang()}',
+      );
+      log("Response cities ${response.data}");
+
+      if (response.statusCode == 200) {
+        cities = lookUpModelFromJson(jsonEncode(response.data['data']));
+        return;
+
+      }
+      throw Exception('Failed to load cities');
+    } catch (e,s) {
+      log("$e $s");
+
+      throw Exception('Failed to load cities: $e');
+    }
+  }
 
   Future<void> getBanks() async {
 

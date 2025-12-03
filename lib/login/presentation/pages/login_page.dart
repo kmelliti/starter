@@ -21,6 +21,7 @@ class LoginPage extends StatelessWidget {
 
   final LoginController _loginController = getIt();
   final ValueNotifier<bool> isLoading = ValueNotifier(false);
+  final ValueNotifier<bool> showPassword= ValueNotifier(false);
   @override
   Widget build(BuildContext context) {
 
@@ -63,11 +64,28 @@ class LoginPage extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-                child: TextField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(hintText: "password".tr,)
-                      .applyDefaults(Theme.of(context).inputDecorationTheme),
+                child: ValueListenableBuilder(
+                  valueListenable: showPassword,
+                  builder: (context,val,_) {
+                    return TextField(
+                      controller: passwordController,
+                      obscureText: !val ,
+                      decoration: InputDecoration(hintText: "password".tr,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          val ? Icons.visibility : Icons.visibility_off,
+                          color: HexColor.fromHex(AppTheme.primaryColor),
+                        ),
+                        onPressed: () {
+
+                            showPassword.value = !showPassword.value;
+
+                        },
+                      ),
+                      )
+                          .applyDefaults(Theme.of(context).inputDecorationTheme),
+                    );
+                  }
                 ),
               ),
               Row(
@@ -110,7 +128,7 @@ class LoginPage extends StatelessWidget {
                           Get.toNamed(AppRoutes.mainScreen);
                         }catch(e,s){
                           log("$e $s");
-                          //showErrorDialog(context, e.toString().replaceRange(0, "Exception: ".length,""));
+                          handleException(context, e);
                         }
 
                         isLoading.value = false;

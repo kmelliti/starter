@@ -135,11 +135,7 @@ class AppTheme {
         borderRadius: BorderRadius.circular(30),
         borderSide: const BorderSide(color: Colors.red, width: 2),
       ),
-      hintStyle: TextStyle(
-          color: HexColor.fromHex("#B3B3B3"),
-          fontWeight: FontWeight.w600,
-          fontSize: 14
-      ),
+      hintStyle: getHintStyle(),
       errorStyle: const TextStyle(color: Colors.red),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(style: filledButtonStyle),
@@ -151,73 +147,81 @@ class AppTheme {
     ),
   );
 
-  // Dark Theme
-  static final ThemeData darkTheme = ThemeData.dark().copyWith(
-    useMaterial3: true,
+  static TextStyle getHintStyle() {
+    return TextStyle(
+        color: HexColor.fromHex("#717088"),
+        fontWeight: FontWeight.w400,
+        fontSize: 14
+    );
+  }
 
-    textTheme: GoogleFonts.cairoTextTheme(
-      ThemeData.dark().textTheme.copyWith(
-        displayLarge: displayLarge.copyWith(color: Colors.white),
-        displayMedium: displayMedium.copyWith(color: Colors.white),
-        titleLarge: titleLarge.copyWith(color: Colors.white),
-        bodyLarge: bodyLarge.copyWith(color: Colors.white70),
-        bodyMedium: bodyMedium.copyWith(color: Colors.white70),
-      ),
-    ),
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: HexColor.fromHex(primaryColor),
-      brightness: Brightness.dark,
-    ),
-    inputDecorationTheme: InputDecorationTheme(
-      filled: false,
-      fillColor: Colors.white,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30),
-        borderSide: BorderSide.none,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30),
-        borderSide: BorderSide(color: HexColor.fromHex(textFieldBorder)),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30),
-        borderSide: const BorderSide(color: Colors.blue, width: 2),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30),
-        borderSide: const BorderSide(color: Colors.red),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30),
-        borderSide: const BorderSide(color: Colors.red, width: 2),
-      ),
-      labelStyle: const TextStyle(color: Colors.grey),
-      hintStyle: TextStyle(color: Colors.grey[500]),
-      errorStyle: const TextStyle(color: Colors.red),
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue[700],
-        foregroundColor: Colors.white,
-        minimumSize: const Size(double.infinity, 50),
-        elevation: 2,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        textStyle: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-        ),
-      ),
-    ),
-    textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        foregroundColor: Colors.blue[300],
-        textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-      ),
-    ),
-  );
+  // // Dark Theme
+  // static final ThemeData darkTheme = ThemeData.dark().copyWith(
+  //   useMaterial3: true,
+  //
+  //   textTheme: GoogleFonts.cairoTextTheme(
+  //     ThemeData.dark().textTheme.copyWith(
+  //       displayLarge: displayLarge.copyWith(color: Colors.white),
+  //       displayMedium: displayMedium.copyWith(color: Colors.white),
+  //       titleLarge: titleLarge.copyWith(color: Colors.white),
+  //       bodyLarge: bodyLarge.copyWith(color: Colors.white70),
+  //       bodyMedium: bodyMedium.copyWith(color: Colors.white70),
+  //     ),
+  //   ),
+  //   colorScheme: ColorScheme.fromSeed(
+  //     seedColor: HexColor.fromHex(primaryColor),
+  //     brightness: Brightness.dark,
+  //   ),
+  //   inputDecorationTheme: InputDecorationTheme(
+  //     filled: false,
+  //     fillColor: Colors.white,
+  //     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  //     border: OutlineInputBorder(
+  //       borderRadius: BorderRadius.circular(30),
+  //       borderSide: BorderSide.none,
+  //     ),
+  //     enabledBorder: OutlineInputBorder(
+  //       borderRadius: BorderRadius.circular(30),
+  //       borderSide: BorderSide(color: HexColor.fromHex(textFieldBorder)),
+  //     ),
+  //     focusedBorder: OutlineInputBorder(
+  //       borderRadius: BorderRadius.circular(30),
+  //       borderSide: const BorderSide(color: Colors.blue, width: 2),
+  //     ),
+  //     errorBorder: OutlineInputBorder(
+  //       borderRadius: BorderRadius.circular(30),
+  //       borderSide: const BorderSide(color: Colors.red),
+  //     ),
+  //     focusedErrorBorder: OutlineInputBorder(
+  //       borderRadius: BorderRadius.circular(30),
+  //       borderSide: const BorderSide(color: Colors.red, width: 2),
+  //     ),
+  //     labelStyle: const TextStyle(color: Colors.grey),
+  //     hintStyle: TextStyle(color: Colors.grey[500]),
+  //     errorStyle: const TextStyle(color: Colors.red),
+  //   ),
+  //   elevatedButtonTheme: ElevatedButtonThemeData(
+  //     style: ElevatedButton.styleFrom(
+  //       backgroundColor: Colors.blue[700],
+  //       foregroundColor: Colors.white,
+  //       minimumSize: const Size(double.infinity, 50),
+  //       elevation: 2,
+  //       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+  //       textStyle: const TextStyle(
+  //         fontSize: 16,
+  //         fontWeight: FontWeight.w600,
+  //         letterSpacing: 0.5,
+  //       ),
+  //     ),
+  //   ),
+  //   textButtonTheme: TextButtonThemeData(
+  //     style: TextButton.styleFrom(
+  //       foregroundColor: Colors.blue[300],
+  //       textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+  //     ),
+  //   ),
+  // );
 
   Widget custume(Widget child) {
     return Container(decoration: BoxDecoration(), child: child);

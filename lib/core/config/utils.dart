@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -8,12 +9,19 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'package:starter/core/config/app_constants.dart';
 import 'package:starter/core/services/app_service.dart';
+import 'package:starter/screens/main_screen/controller/main_screen_controller.dart';
 
 import '../di/di.dart';
+import '../models/lookup_model.dart';
 import '../routes/app_routes.dart';
 import '../services/auth_services.dart';
 import '../theme/app_theme.dart';
+import 'exceptions/api_exception.dart';
+String displayStringForOption(LookUpModel lookup) => lookup.name;
 
+
+String googleMapsKeyAndroid = "";
+String googleMapsKeyIos = "";
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
   static Color fromHex(String hexString) {
@@ -31,6 +39,26 @@ extension HexColor on Color {
       '${green.toRadixString(16).padLeft(2, '0')}'
       '${blue.toRadixString(16).padLeft(2, '0')}';
 }
+final _acct21 = RegExp(r'^\d{21}$');
+
+String? validateAccount21(String? value) {
+  if (value == null || value.trim().isEmpty) return 'field_required'.tr;
+  final v = value.replaceAll(' ', '').trim();
+  return _acct21.hasMatch(v) ? null : 'invalid_account'.tr;
+}
+bool isValidSaudiPhone(String input) {
+  return RegExp(r'^05[0-9]{8}$').hasMatch(input);
+}
+
+
+final _saIbanReg = RegExp(r'^SA\d{2}(?:\s?\d{4}){5}$');
+
+String? validateSaudiIban(String? value) {
+  if (value == null || value.trim().isEmpty) return 'field_required'.tr;
+  final v = value.replaceAll('-', '').trim();
+  return _saIbanReg.hasMatch(v) ? null : 'invalid_iban'.tr;
+}
+
 
 Widget sideInAnimation({required Widget child}){
   return TweenAnimationBuilder(
@@ -44,6 +72,19 @@ Widget sideInAnimation({required Widget child}){
     },
     child: child,
   );
+}
+
+
+String getMapPictureLink (String lat,String lang){
+  return "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s+ff9a4d($lat,$lang)/$lat,$lang,10/400x200@2x?access_token=pk.eyJ1IjoiZ2hhc3Nlbm0iLCJhIjoiY21oY201bXY5MGd1MDJpczhhamc1dTI1MyJ9.qcYuXI_X9cIb_pLQFaQ0ng";
+}
+
+void handleException(BuildContext context,Object e){
+  if(e is ApiException){
+    showErrorDialog(context, e.message);
+  }else{
+    showErrorDialog(context);
+  }
 }
 
 Widget getDiscountedPriceInText(double price) {
@@ -137,9 +178,9 @@ void showErrorDialog(BuildContext context, [String? error]) {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: HexColor.fromHex("#717088"),
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w500,
                 letterSpacing: 0.2,
-                fontSize: 20,
+                fontSize: 16,
               ),
             ),
             SizedBox(height: 40),
@@ -178,7 +219,7 @@ Widget buildATitle(BuildContext context, String text) {
     Text(
       text,
       style: Theme.of(context).textTheme.labelLarge?.copyWith(
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: FontWeight.w800,
       ),
     ),
@@ -272,12 +313,12 @@ void showLogoutAlert(BuildContext context) {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: HexColor.fromHex("#717088"),
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w500,
                 letterSpacing: 0.2,
-                fontSize: 20,
+                fontSize: 16,
               ),
             ),
-            SizedBox(height: 60),
+            SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
                 Get.back();
@@ -292,6 +333,8 @@ void showLogoutAlert(BuildContext context) {
                 AppServices appServices = getIt();
                 authService.signOut();
                 appServices.removeUserAndToken();
+                MainScreenController c = getIt();
+                c.indexWidget.value = 0;
                 Get.offAllNamed(AppRoutes.login);
               },
               child: Text(
@@ -378,7 +421,10 @@ dynamic showDeleteAlert(BuildContext context) async{
   );
 }
 
-AppBar buildAppBar() {
+AppBar buildAppBar([Function(String value)? onSearchSubmitted]) {
+
+  final ValueNotifier<double> widthSearchBox = ValueNotifier(57);
+  TextEditingController searchController = TextEditingController();
   return AppBar(
     backgroundColor: HexColor.fromHex(AppTheme.appBackGroundColor),
     elevation: 0,
@@ -407,27 +453,26 @@ AppBar buildAppBar() {
     actions: [
       TweenAnimationBuilder<double>(
         tween: Tween(begin: 0.0, end: 1.0),
-        duration: Duration(milliseconds: 600),
+        duration: Duration(milliseconds: 300),
         curve: Curves.easeOutBack,
         builder: (context, value, child) {
           return Transform.translate(
             offset: Offset(0, (1 - value) * 20),
             child: Opacity(
               opacity: value.clamp(0.0, 1.0),
-              child: Hero(
-                tag: "a4",
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {},
-                    borderRadius: BorderRadius.circular(30),
-                    child: Container(
-                      width: 50,
+              child: Material(
+                color: Colors.transparent,
+                child: ValueListenableBuilder(
+                  valueListenable: widthSearchBox,
+                  builder: (context,size,_) {
+                    return AnimatedContainer(
+                      width: size,
                       height: 50,
                       padding: EdgeInsets.all(15),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        shape: BoxShape.circle,
+                      //  shape:size == 200 ? BoxShape.rectangle : BoxShape.circle,
+                        borderRadius:BorderRadius.circular(50),
                         border: Border.all(
                           color: HexColor.fromHex(AppTheme.borderGrey),
                         ),
@@ -439,58 +484,125 @@ AppBar buildAppBar() {
                           ),
                         ],
                       ),
-                      child: SvgPicture.asset("assets/icons/search.svg"),
-                    ),
-                  ),
+                      duration: Duration(milliseconds: 300),
+                      child: Row(
+                        mainAxisAlignment: size == 250 ?MainAxisAlignment.end:MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          if(size == 250)Expanded(
+                            child: Center(
+                              child: TextFormField(
+                                controller: searchController,
+                                onTapOutside: (p) {
+                                  FocusScope.of(context).unfocus();
+                                },
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(vertical:6.9),
+                                  border: InputBorder.none,
+
+                                  prefixIcon: InkWell(
+                                    onTap: (){
+                                      searchController.text = "";
+
+                                        widthSearchBox.value = 55;
+
+                                    },
+                                    child:size == 250? Container(
+                                      padding: EdgeInsets.all(1),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(color: HexColor.fromHex(AppTheme.primaryColor))
+                                        ),
+                                        child: Icon(Icons.close,size: 12, color: HexColor.fromHex(AppTheme.borderGrey),)):null,
+                                  ),
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+
+                                  hintText: "search".tr,
+                                  hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    color: HexColor.fromHex(AppTheme.borderGrey),
+                                  ),
+                                ),
+                                textAlign: TextAlign.start,
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                              onTap: (){
+
+                                MainScreenController c = getIt();
+                                if(c.indexWidget.value != 0){
+                                  return;
+                                }
+                                if(size == 250){
+                                  if(searchController.text.isEmpty){
+                                    return;
+                                  }
+                                  onSearchSubmitted?.call(searchController.text);
+                                }else{
+                                  widthSearchBox.value = 250;
+                                }
+
+                              },
+                              child: SvgPicture.asset("assets/icons/search.svg")),
+                        ],
+                      ),
+                    );
+                  }
                 ),
               ),
             ),
           );
         },
       ),
-      TweenAnimationBuilder<double>(
-        tween: Tween(begin: 0.0, end: 1.0),
-        duration: Duration(milliseconds: 800),
-        curve: Curves.easeOutBack,
-        builder: (context, value, child) {
-          return Transform.translate(
-            offset: Offset(0, (1 - value) * 20),
-            child: Opacity(
-              opacity: value.clamp(0.0, 1.0),
-              child: Hero(
-                tag: "a3",
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {},
-                    borderRadius: BorderRadius.circular(30),
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      padding: EdgeInsets.all(15),
-                      margin: EdgeInsets.symmetric(horizontal: 15),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: HexColor.fromHex(AppTheme.borderGrey),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 5,
-                            offset: Offset(0, 2),
+      ValueListenableBuilder(
+        valueListenable: widthSearchBox,
+        builder: (context,size,_) {
+          return TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0.0, end: 1.0),
+            duration: Duration(milliseconds: 800),
+            curve: Curves.easeOutBack,
+            builder: (context, value, child) {
+              return Transform.translate(
+                offset: Offset(0, (1 - value) * 20),
+                child: Opacity(
+                  opacity: value.clamp(0.0, 1.0),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {},
+                      borderRadius: BorderRadius.circular(30),
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
+                        width: size == 250 ? 0 :55,
+                        height: size == 250 ? 0 :55,
+                        padding: EdgeInsets.all(15),
+                        margin: EdgeInsets.symmetric(horizontal: 15),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: HexColor.fromHex(AppTheme.borderGrey),
                           ),
-                        ],
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 5,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: SvgPicture.asset("assets/icons/notifications.svg"),
                       ),
-                      child: SvgPicture.asset("assets/icons/notifications.svg"),
                     ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           );
-        },
+        }
       ),
     ],
   );

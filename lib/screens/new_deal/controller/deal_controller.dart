@@ -21,6 +21,9 @@ class DealController {
     return await _dealServices.getStoreLocations();
   }
 
+  Future<void> closeDeal (String dealId)async {
+    return await _dealServices.closeDeal(dealId);
+  }
   void showSuccessDialog(BuildContext context) {
     Get.dialog(
       Dialog(
