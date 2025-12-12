@@ -61,7 +61,7 @@ class _EditCompanyInformationState extends State<EditCompanyInformation>
     )..repeat();
 
     _companyNameController.text = user.merchant.companyName;
-    _rneController.text = user.merchant.tradeLicenseNumber;
+    _rneController.text = user.merchant.tradeLicenseNumber??"";
     _addressController.text = user.merchant.address;
     selectedCategory = user.merchant.categoryId;
     companyLogo=  user.merchant.picture;

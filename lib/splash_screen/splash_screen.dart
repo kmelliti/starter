@@ -38,11 +38,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
     bool isLoggedIn = appServices.getToken() != null;
 
-    log("${appServices.getToken()}");
     Future.delayed(Duration(seconds: 4), () {
       if (isLoggedIn) {
         WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_) {
-
          Get.offNamed(AppRoutes.mainScreen);
 
         });

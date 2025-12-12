@@ -24,7 +24,7 @@ dependencies:
   image_color_builder: any
   file_picker: ^10.3.3
   intl: ^0.20.2
-  flutter_map: any
+  google_maps_flutter: ^2.14.0
   equatable: ^2.0.7
 
 

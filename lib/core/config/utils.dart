@@ -20,8 +20,9 @@ import 'exceptions/api_exception.dart';
 String displayStringForOption(LookUpModel lookup) => lookup.name;
 
 
-String googleMapsKeyAndroid = "";
-String googleMapsKeyIos = "";
+String googleMapsKeyAndroid = "AIzaSyCCE1JQcpCpmu5PoK_J0Z94-_GrJOjyzyI";
+String googleMapsKeyIos = googleMapsKeyAndroid;
+
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
   static Color fromHex(String hexString) {

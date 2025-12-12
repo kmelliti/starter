@@ -96,9 +96,9 @@ class Merchant {
   int categoryId;
   String companyName;
   String? picture;
-  String tradeLicenseNumber;
+  String? tradeLicenseNumber;
   String address;
-  String taxCertificate;
+  String? taxCertificate;
   dynamic copyTradeLicense;
   dynamic linkTiktok;
   dynamic linkInstagram;
