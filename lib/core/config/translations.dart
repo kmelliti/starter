@@ -147,7 +147,8 @@ class AppTranslation extends Translations {
       'funded': ' ممول',
       'active': 'مفعل ',
       "status_deal":"حالة الصفقة",
-      "cancelled":"ملغي"
+      "cancelled":"ملغي",
+      "list_locations":"قائمة المواقع"
     },
   };
 }

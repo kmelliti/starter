@@ -4,12 +4,15 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'package:starter/core/config/app_constants.dart';
 import 'package:starter/core/services/app_service.dart';
 import 'package:starter/screens/main_screen/controller/main_screen_controller.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../di/di.dart';
 import '../models/lookup_model.dart';
@@ -198,6 +201,34 @@ void showErrorDialog(BuildContext context, [String? error]) {
     ),
   );
 }
+
+Future<LatLng?> getLatLngFromAddress(String address) async {
+  try {
+    List<Location> locations = await locationFromAddress(address);
+
+    final loc = locations.first;
+
+    return LatLng(loc.latitude, loc.longitude);
+  } catch (e) {
+    return null;
+  }
+}
+Future<String> getAddressFromLatLng(double lat, double lng) async {
+  List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+  Placemark p = placemarks.first;
+
+  return "${p.street}, ${p.locality}, ${p.country}";
+}
+Future<void> openInGoogleMaps(double lat, double lng) async {
+  final url = Uri.parse("https://www.google.com/maps/search/?api=1&query=$lat,$lng");
+
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url, mode: LaunchMode.externalApplication);
+  } else {
+    throw "Could not launch Google Maps";
+  }
+}
+
 
 Future<Color> getDominantColor(String url) async {
 

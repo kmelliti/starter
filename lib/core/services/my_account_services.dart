@@ -9,6 +9,7 @@ import 'package:starter/screens/my_account/models/updateUserParams.dart';
 
 import '../config/utils.dart';
 import '../di/di.dart';
+import '../models/location_model.dart';
 import '../models/user_model.dart';
 
 class MyAccountServices {
@@ -94,6 +95,28 @@ class MyAccountServices {
 
       log("User bank responded ${response.data['data']}");
       return bankAccountModelFromJson(jsonEncode(response.data['data']));
+
+    }catch(e,s){
+      log("$e , $e");
+      rethrow;
+    }
+  }
+  Future<List<LocationModel>> getLocationsList()async{
+    AppServices _appServices = getIt();
+    try{
+      final response = await _dio.get(
+        'BorsaNow/public/api/v1/merchant/locations/${getLang()}',
+        queryParameters: {
+          "token":_appServices.getToken()
+        }
+      );
+      if(response.data["result"] == false){
+        throw ApiException(response.data["message"]);
+      }
+
+
+      log("User bank responded ${response.data['data']}");
+      return locationModelFromJson(jsonEncode(response.data['data']));
 
     }catch(e,s){
       log("$e , $e");
