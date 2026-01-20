@@ -12,9 +12,11 @@ import '../../../core/theme/app_theme.dart';
 import '../controller/deal_controller.dart';
 import '../models/store_location_model.dart';
 
+typedef OnSelected = Function(List<StoreLocationModel>);
 class StoreList extends StatefulWidget {
-  StoreList({super.key, required this.stores});
+  StoreList({super.key, required this.stores, required this.onSelected});
   final List<StoreLocationModel> stores;
+  final OnSelected onSelected;
 
   @override
   State<StoreList> createState() => _StoreListState();
@@ -30,6 +32,7 @@ class _StoreListState extends State<StoreList> {
     log("Stores length ${stores.value.length}");
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -68,80 +71,83 @@ class _StoreListState extends State<StoreList> {
             );
           }
 
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: locations.length,
-                itemBuilder: (context, index) {
-                  return ValueListenableBuilder(
-                    valueListenable: stores,
-                    builder: (context, list, _) {
-                      return ListTile(
-                        onTap: () {
-                          List<StoreLocationModel> legacyList = stores.value;
-                          if (list.contains(locations[index])) {
-                            legacyList.remove(locations[index]);
-                          } else {
-                            legacyList.add(locations[index]);
-                          }
-                          stores.value = [...legacyList];
-                        },
-                        leading: Container(
-                          width: 100,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.network(
-                              "https://media.wired.com/photos/59269cd37034dc5f91bec0f1/191:100/w_1280,c_limit/GoogleMapTA.jpg",
-                              fit: BoxFit.cover,
-                              width: 50,
+          return SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: locations.length,
+                  itemBuilder: (context, index) {
+                    return ValueListenableBuilder(
+                      valueListenable: stores,
+                      builder: (context, list, _) {
+                        return ListTile(
+                          onTap: () {
+                            List<StoreLocationModel> legacyList = stores.value;
+                            if (list.contains(locations[index])) {
+                              legacyList.remove(locations[index]);
+                            } else {
+                              legacyList.add(locations[index]);
+                            }
+                            stores.value = [...legacyList];
+                            widget.onSelected(stores.value);
+                          },
+                          leading: Container(
+                            width: 100,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                "https://media.wired.com/photos/59269cd37034dc5f91bec0f1/191:100/w_1280,c_limit/GoogleMapTA.jpg",
+                                fit: BoxFit.cover,
+                                width: 50,
+                              ),
                             ),
                           ),
-                        ),
-                        title: Text(locations[index].address),
-                        subtitle: Text(
-                          cities
-                                  .firstWhereOrNull(
-                                    (test) =>
-                                        test.id.toString() ==
-                                        cities[index].id.toString(),
-                                  )
-                                  ?.name ??
-                              "",
-                          style: TextStyle(
-                            color: HexColor.fromHex(AppTheme.hintColor2),
+                          title: Text(locations[index].address),
+                          subtitle: Text(
+                            cities
+                                    .firstWhereOrNull(
+                                      (test) =>
+                                          test.id.toString() ==
+                                          cities[index].id.toString(),
+                                    )
+                                    ?.name ??
+                                "",
+                            style: TextStyle(
+                              color: HexColor.fromHex(AppTheme.hintColor2),
+                            ),
                           ),
-                        ),
-                        trailing: Checkbox(
-                          value: list.contains(locations[index]),
+                          trailing: Checkbox(
+                            value: list.contains(locations[index]),
 
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            onChanged: (v) {},
                           ),
-                          onChanged: (v) {},
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Divider(),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 150,
-                      margin: EdgeInsets.all(20),
-                      child: ElevatedButton(onPressed: () {
-                        Get.back(result: stores.value);
-                      }, child: Text("save".tr),style: AppTheme.outlinedButtonStyle,)),
-                ],
-              ),
-            ],
+                        );
+                      },
+                    );
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Divider(),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 150,
+                        margin: EdgeInsets.all(20),
+                        child: ElevatedButton(onPressed: () {
+                          Get.back(result: stores.value);
+                        }, child: Text("save".tr),style: AppTheme.outlinedButtonStyle,)),
+                  ],
+                ),
+              ],
+            ),
           );
         }
         return Center(

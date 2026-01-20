@@ -91,9 +91,7 @@ class AppServices {
   String? getToken() {
     return _prefs.getString(spToken);
   }
-  void removeUser() {
-    _prefs.remove(spUser);
-  }
+
 
   void removeUserAndToken() {
     _prefs.clear();

@@ -38,6 +38,7 @@ class DioInitializer {
         //   () => appController.getAppLanguage() ?? "en",
         // );
         final AppServices appServices = getIt();
+        print("Token from Dio ${appServices.getToken()}");
         request.headers.putIfAbsent(
           "Authorization",
           () => "Bearer ${appServices.getToken()}",

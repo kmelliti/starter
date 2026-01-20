@@ -9,25 +9,70 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../core/config/utils.dart';
 import '../../../core/di/di.dart';
 import '../../my_account/controller/my_account_controller.dart';
+import '../widgets/map_layer.dart';
 
-class MapApp extends StatelessWidget {
-  MapApp({super.key});
+class MapApp extends StatefulWidget {
+  MapApp({super.key, this.coordinated});
+
+  final Map<String, dynamic>? coordinated;
+
+  @override
+  State<MapApp> createState() => _MapAppState();
+}
+
+class _MapAppState extends State<MapApp> {
   ValueNotifier<String?> address = ValueNotifier(null);
-  ValueNotifier<LatLng?> position = ValueNotifier(null);
-  ValueNotifier<bool> isSearchLoading = ValueNotifier(false);
-  final TextEditingController searchController = TextEditingController();
-  final MyAccountController _controller = getIt<MyAccountController>();
 
+  ValueNotifier<LatLng?> position = ValueNotifier(null);
+
+  ValueNotifier<bool> isSearchLoading = ValueNotifier(false);
+
+  final TextEditingController searchController = TextEditingController();
+
+  final MyAccountController _controller = getIt<MyAccountController>();
+  Marker? marker;
+
+  @override
+  void didChangeDependencies() {
+    if (widget.coordinated != null) {
+      marker = Marker(
+        markerId: MarkerId(
+          widget.coordinated!['merchant_location_id'].toString(),
+        ),
+        position: LatLng(
+          double.parse(widget.coordinated!['latitude'].toString()),
+          double.parse(widget.coordinated!['longitude'].toString()),
+        ),
+      );
+      log("Marker has been set");
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
+  void initState() {
+    if (widget.coordinated != null) {
+      position.value = LatLng(
+        double.parse(widget.coordinated!['latitude'].toString()),
+        double.parse(widget.coordinated!['longitude'].toString()),
+      );
+      address.value = widget.coordinated!['address'];
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          MapLayer(onAddressSelected: (String address, LatLng position) {
-            this.address.value = address;
-            this.position.value = position;
-           },),
+          MapLayer(
+            onAddressSelected: (String address, LatLng position) {
+              this.address.value = address;
+              this.position.value = position;
+            },
+            marker: marker,
+          ),
           Positioned(
             top: 60,
             left: 20,
@@ -35,7 +80,7 @@ class MapApp extends StatelessWidget {
             child: Row(
               children: [
                 InkWell(
-                  onTap: (){
+                  onTap: () {
                     Get.back();
                   },
                   child: Container(
@@ -58,35 +103,40 @@ class MapApp extends StatelessWidget {
                         children: [
                           ValueListenableBuilder(
                             valueListenable: isSearchLoading,
-                            builder: (context,v,_) {
-                              return v? getLoader() :InkWell(
-                                onTap: ()async{
-                                  isSearchLoading.value = true;
-                                LatLng? newAdd = await  getLatLngFromAddress(searchController.text);
-                                if(newAdd != null){
-                                  log(newAdd.longitude.toString());
+                            builder: (context, v, _) {
+                              return v
+                                  ? getLoader()
+                                  : InkWell(
+                                    onTap: () async {
+                                      isSearchLoading.value = true;
+                                      LatLng? newAdd =
+                                          await getLatLngFromAddress(
+                                            searchController.text,
+                                          );
+                                      if (newAdd != null) {
+                                        log(newAdd.longitude.toString());
 
-                                  _controller.goToAddress( CameraPosition(
-                                    bearing: 192.8334901395799,
-                                    target: newAdd,
+                                        _controller.goToAddress(
+                                          CameraPosition(
+                                            bearing: 192.8334901395799,
+                                            target: newAdd,
 
-                                    zoom: 19.151926040649414,
-                                  ));
-                                }else{
-                                  log("not found");
-                                }
-                                isSearchLoading.value = false;
-                                },
-                                child: SvgPicture.asset(
-                                  "assets/icons/search.svg".tr,
-
-                                ),
-                              );
-                            }
+                                            zoom: 19.151926040649414,
+                                          ),
+                                        );
+                                      } else {
+                                        log("not found");
+                                      }
+                                      isSearchLoading.value = false;
+                                    },
+                                    child: SvgPicture.asset(
+                                      "assets/icons/search.svg".tr,
+                                    ),
+                                  );
+                            },
                           ),
                           Expanded(
                             child: TextField(
-
                               controller: searchController,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
@@ -95,7 +145,9 @@ class MapApp extends StatelessWidget {
                                 errorBorder: InputBorder.none,
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
-                              ).applyDefaults(Theme.of(context).inputDecorationTheme),
+                              ).applyDefaults(
+                                Theme.of(context).inputDecorationTheme,
+                              ),
                             ),
                           ),
                         ],
@@ -108,8 +160,8 @@ class MapApp extends StatelessWidget {
           ),
           ValueListenableBuilder(
             valueListenable: address,
-            builder: (context,v,_) {
-              if(v == null){
+            builder: (context, v, _) {
+              if (v == null) {
                 return Container();
               }
               List<String> address = v.split(",");
@@ -118,15 +170,12 @@ class MapApp extends StatelessWidget {
                 left: 20,
                 right: 20,
                 child: Container(
-
-
                   padding: EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: ListTile(
-
                     title: Text(address[0]),
                     subtitle: Row(
                       children: [
@@ -145,7 +194,7 @@ class MapApp extends StatelessWidget {
                   ),
                 ),
               );
-            }
+            },
           ),
           Positioned(
             bottom: 20,
@@ -153,16 +202,24 @@ class MapApp extends StatelessWidget {
             right: 20,
             child: ElevatedButton(
               onPressed: () {
-                if(address.value == null){
+                if (address.value == null) {
                   Get.back();
-                }else{
-                  Get.back(result: {
-                    "address":address.value!,
-                    "longitude":position.value!.longitude,
-                    "latitude":position.value!.latitude,
-                  });
+                } else {
+                  Map<String, dynamic> coordinates;
+                  if (widget.coordinated == null) {
+                    coordinates = {
+                      "address": address.value!,
+                      "longitude": position.value!.longitude,
+                      "latitude": position.value!.latitude,
+                    };
+                  } else {
+                    coordinates = widget.coordinated!;
+                    coordinates['address'] = address.value!;
+                    coordinates['longitude'] = position.value!.longitude;
+                    coordinates['latitude'] = position.value!.latitude;
+                  }
+                  Get.back(result: coordinates);
                 }
-
               },
               child: Text('save_location'.tr),
             ),
@@ -171,74 +228,4 @@ class MapApp extends StatelessWidget {
       ),
     );
   }
-}
-
-typedef void OnAddressSelected(String address,LatLng position);
-class MapLayer extends StatefulWidget {
-  const MapLayer({super.key, required this.onAddressSelected});
-  final OnAddressSelected onAddressSelected;
-
-  @override
-  State<MapLayer> createState() => MapLayerState();
-}
-
-class MapLayerState extends State<MapLayer> {
-  LatLng? selectedPosition;
-  Set<Marker> markers = {};
-  final Completer<GoogleMapController> _controller =
-  Completer<GoogleMapController>();
-
-  static const CameraPosition initialCameraPosition = CameraPosition(
-    target: LatLng(24.725118962911782, 46.64921132187667),
-    zoom: 14.4746,
-  );
-
-  final MyAccountController myAccountController = getIt<MyAccountController>();
-  @override
-  void initState() {
-    myAccountController.controller = _controller;
-    super.initState();
-  }
-  @override
-  void dispose() {
-
-    super.dispose();
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: GoogleMap(
-        mapType: MapType.hybrid,
-        initialCameraPosition: initialCameraPosition,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-
-        markers: markers,
-        onTap: (position)async{
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            setState(() {
-              selectedPosition = position;
-              markers.clear();
-              markers.add(Marker(markerId: MarkerId(position.toString()), position: position));
-            });
-
-          });
-          String address = await getAddressFromLatLng(position.latitude, position.longitude);
-          log(address);
-          widget.onAddressSelected(address, position);
-        },
-      ),
-
-    );
-  }
-
-  Future<void> goToAddress(CameraPosition cp) async {
-    final GoogleMapController controller = await _controller.future;
-    await controller.animateCamera(CameraUpdate.newCameraPosition(cp));
-  }
-
-
 }

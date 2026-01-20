@@ -34,20 +34,19 @@ class LocationModel {
     merchantId: json["merchant_id"],
     cityId: json["city_id"],
     address: json["address"],
-    latitude: json["latitude"],
-    longitude: json["longitude"],
+    latitude: json["latitude"].toString(),
+    longitude: json["longitude"].toString(),
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
+    "merchant_location_id": id,
     "merchant_id": merchantId,
     "city_id": cityId,
     "address": address,
     "latitude": latitude,
     "longitude": longitude,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
+
   };
 }

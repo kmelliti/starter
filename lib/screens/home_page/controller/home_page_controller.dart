@@ -105,6 +105,7 @@ class HomePageController {
       ),
     );
   }
+
   void showSuccessCloseDeal(BuildContext context) {
 
     Get.dialog(

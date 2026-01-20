@@ -7,8 +7,10 @@ import 'package:starter/screens/products/controller/products_controller.dart';
 import 'package:starter/screens/products/models/product_model.dart';
 
 import '../../../core/di/di.dart';
+import '../../../core/models/lookup_model.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/theme/app_theme.dart';
+import '../widgets/filters.dart';
 import '../widgets/single_product_widget.dart';
 
 class ProductsPage extends StatefulWidget {
@@ -21,7 +23,7 @@ class ProductsPage extends StatefulWidget {
 class _ProductsPageState extends State<ProductsPage> {
   final ProductController _controller = getIt();
 
-
+  List<LookUpModel> filters = [];
   bool shownAlert = false;
   late final _pagingController = PagingController<int, ProductModel>(
     getNextPageKey:
@@ -33,23 +35,22 @@ class _ProductsPageState extends State<ProductsPage> {
   void initState() {
     _pagingController.addListener(() {
       debugPrint("Updated item count: ${_pagingController.items?.length}");
-
     });
 
-
-    _pagingController.addListener((){
-
-      if(_pagingController.status == PagingStatus.completed){
-        if(!shownAlert)
-        WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((timeStamp) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("click_image_for_options".tr),
-              duration: Duration(seconds: 3),
-            ),
-          );
-          shownAlert  = true;
-        });
+    _pagingController.addListener(() {
+      if (_pagingController.status == PagingStatus.completed) {
+        if (!shownAlert)
+          WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((
+            timeStamp,
+          ) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("click_image_for_options".tr),
+                duration: Duration(seconds: 3),
+              ),
+            );
+            shownAlert = true;
+          });
       }
     });
 
@@ -64,8 +65,6 @@ class _ProductsPageState extends State<ProductsPage> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       appBar: buildAppBarWithBack(context),
       body: Container(
@@ -93,7 +92,6 @@ class _ProductsPageState extends State<ProductsPage> {
               Row(
                 children: [
                   Expanded(
-                    flex: 1,
                     child: ElevatedButton(
                       onPressed: () async {
                         final res = await Get.toNamed(AppRoutes.addProduct);
@@ -101,43 +99,89 @@ class _ProductsPageState extends State<ProductsPage> {
                           _pagingController.refresh();
                         }
                       },
-                      child: Text("add_new_product".tr),
+                      child: Text(
+                        "add_new_product".tr,
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                   SizedBox(width: 10),
                   Expanded(
-                    flex: 1,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: HexColor.fromHex(AppTheme.filledBox),
-                        border: Border.all(
-                          color: HexColor.fromHex(AppTheme.borderGrey),
+                    child: InkWell(
+                      onTap: () {
+                        if (filters.isNotEmpty) {
+                          setState(() {
+                            filters.clear();
+                          });
+                          _pagingController.refresh();
+                          return;
+                        }
+                        showModalBottomSheet(
+                          context: context,
+                          showDragHandle: true,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          builder: (_) {
+                            return ProductFilters(
+                              onSelected: (List<LookUpModel> filters) {
+                                this.filters = filters;
+                                _pagingController.refresh();
+                                setState(() {});
+                              },
+                              productSelectedCategories: filters,
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 15,
+                          vertical: 10,
                         ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "filter_options".tr,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.labelLarge?.copyWith(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: HexColor.fromHex(AppTheme.primaryColor),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: HexColor.fromHex(
+                            filters.isNotEmpty
+                                ? AppTheme.primaryColor
+                                : AppTheme.filledBox,
+                          ),
+                          border: Border.all(
+                            color: HexColor.fromHex(AppTheme.borderGrey),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              filters.isNotEmpty
+                                  ? "reset_filters".tr
+                                  : "filter_options".tr,
+                              style: Theme.of(
+                                context,
+                              ).textTheme.labelLarge?.copyWith(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color:
+                                    filters.isNotEmpty
+                                        ? Colors.white
+                                        : HexColor.fromHex(
+                                          AppTheme.primaryColor,
+                                        ),
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 10),
-                          SvgPicture.asset(
-                            "assets/icons/filters.svg",
-                            width: 24,
-                          ),
-                        ],
+                            SizedBox(width: 10),
+                            SvgPicture.asset(
+                              "assets/icons/filters.svg",
+                              width: 24,
+                              color: filters.isNotEmpty ? Colors.white : null,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -148,7 +192,6 @@ class _ProductsPageState extends State<ProductsPage> {
             SizedBox(height: 20),
             Expanded(
               child: PagingListener(
-
                 controller: _pagingController,
 
                 builder:
@@ -165,15 +208,24 @@ class _ProductsPageState extends State<ProductsPage> {
                         transitionDuration: const Duration(milliseconds: 500),
                         itemBuilder:
                             (context, item, index) => InkWell(
-                              onTap: (){
-                                Get.toNamed(AppRoutes.productDetails,arguments: item);
+                              onTap: () {
+                                Get.toNamed(
+                                  AppRoutes.productDetails,
+                                  arguments: item,
+                                );
                               },
-                              child: SingleProductWidget(item,onEdit: ()async {
-                                final res = await Get.toNamed(AppRoutes.addProduct,arguments: [item]);
-
-                              }, onDelete: () async{
-                                await deleteItem(context, item);
-                              },),
+                              child: SingleProductWidget(
+                                item,
+                                onEdit: () async {
+                                  final res = await Get.toNamed(
+                                    AppRoutes.addProduct,
+                                    arguments: [item],
+                                  );
+                                },
+                                onDelete: () async {
+                                  await deleteItem(context, item);
+                                },
+                              ),
                             ),
                       ),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -208,11 +260,11 @@ class _ProductsPageState extends State<ProductsPage> {
   }
 
   Future<void> deleteItem(BuildContext context, ProductModel item) async {
-           final  res  = await showDeleteAlert(context);
-    if(res == true){
-     await _controller.deleteProduct(item.id.toString());
+    final res = await showDeleteAlert(context);
+    if (res == true) {
+      await _controller.deleteProduct(item.id.toString());
       _pagingController.refresh();
-    }else{
+    } else {
       _pagingController.refresh();
     }
   }

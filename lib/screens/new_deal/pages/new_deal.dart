@@ -43,7 +43,6 @@ class _NewDealState extends State<NewDeal> {
 
   @override
   void initState() {
-
     super.initState();
   }
 
@@ -88,11 +87,17 @@ class _NewDealState extends State<NewDeal> {
                     },
 
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 7,
+                      ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
                         border: Border.all(
-                          color: productError ? Colors.red : HexColor.fromHex("#CDCCE0"),
+                          color:
+                              productError
+                                  ? Colors.red
+                                  : HexColor.fromHex("#CDCCE0"),
                         ),
                       ),
                       child: Row(
@@ -100,33 +105,44 @@ class _NewDealState extends State<NewDeal> {
                           selectedProduct != null
                               ? Container(
                                 child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(30),
-                                    child: Container(
-
-                                      child: Image.network(
-                                        "${baseUrlImage}${selectedProduct!.productPictures.first.picture}",
-                                        fit: BoxFit.cover,
-                                        width: 40,
-                                        height: 40,
-                                      ),
+                                  borderRadius: BorderRadius.circular(30),
+                                  child: Container(
+                                    child: Image.network(
+                                      "${baseUrlImage}${selectedProduct!.productPictures.first.picture}",
+                                      fit: BoxFit.cover,
+                                      width: 40,
+                                      height: 40,
                                     ),
                                   ),
+                                ),
                               )
                               : Container(),
-                          SizedBox(width: 10,),
-                          selectedProduct == null ?  Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 7.0),
-                            child: Text( "choose_product".tr,style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: HexColor.fromHex(AppTheme.hintColor2)
-                            )),
-                          ):Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 7.0),
-                            child: Text(selectedProduct!.name),
-                          ),
+                          SizedBox(width: 10),
+                          selectedProduct == null
+                              ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 7.0,
+                                ),
+                                child: Text(
+                                  "choose_product".tr,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyMedium?.copyWith(
+                                    color: HexColor.fromHex(
+                                      AppTheme.hintColor2,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              : Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 7.0,
+                                ),
+                                child: Text(selectedProduct!.name),
+                              ),
                         ],
                       ),
                     ),
-
                   ),
                 ),
                 // SizedBox(height: 20),
@@ -135,7 +151,7 @@ class _NewDealState extends State<NewDeal> {
                 pushUpAnimation(
                   InkWell(
                     onTap: () async {
-                      List<StoreLocationModel>? stores = await showModalBottomSheet(
+                      showModalBottomSheet(
                         context: context,
                         showDragHandle: true,
                         shape: RoundedRectangleBorder(
@@ -145,40 +161,66 @@ class _NewDealState extends State<NewDeal> {
                           ),
                         ),
                         builder: (c) {
-                          return StoreList(stores: selectedStores);
+                          return StoreList(
+                            stores: selectedStores,
+                            onSelected: (stores) {
+                              setState(() {
+                                selectedStores = stores;
+                              });
+                            },
+                          );
                         },
                       );
-
-                      if (stores != null) {
-                        setState(() {
-                          selectedStores = stores;
-                        });
-                      }
                     },
 
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 7,
+                      ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
                         border: Border.all(
-                          color: storeError ? Colors.red : HexColor.fromHex("#CDCCE0"),
+                          color:
+                              storeError
+                                  ? Colors.red
+                                  : HexColor.fromHex("#CDCCE0"),
                         ),
                       ),
                       child: Row(
                         children: [
-                          selectedStores.isEmpty ? Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 7.0),
-                            child: Text("choose_store".tr,style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: HexColor.fromHex(AppTheme.hintColor2)
-                            ),)
-                          ):Container(
-                            padding: EdgeInsets.symmetric(vertical: 7.0),
-                            child: Text(selectedStores.map((e) => e.address).join(", "),maxLines: 1,overflow: TextOverflow.ellipsis,),
-                          )
+                          selectedStores.isEmpty
+                              ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 7.0,
+                                ),
+                                child: Text(
+                                  "choose_store".tr,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyMedium?.copyWith(
+                                    color: HexColor.fromHex(
+                                      AppTheme.hintColor2,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              : Container(
+                                padding: EdgeInsets.symmetric(vertical: 7.0),
+                                child: SizedBox(
+                                  width: 300,
+                                  child: Text(
+                                    selectedStores
+                                        .map((e) => e.address)
+                                        .join(", "),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
                         ],
                       ),
                     ),
-
                   ),
                 ),
                 SizedBox(height: 20),
@@ -276,25 +318,23 @@ class _NewDealState extends State<NewDeal> {
                           ? Center(child: getLoader())
                           : ElevatedButton(
                             onPressed: () async {
-                              if(selectedStores.isEmpty){
+                              if (selectedStores.isEmpty) {
                                 storeError = true;
-                                setState(() {
-
-                                });
+                                setState(() {});
                                 return;
                               }
-                              if(selectedProduct == null){
+                              if (selectedProduct == null) {
                                 productError = true;
-                                setState(() {
-
-                                });
+                                setState(() {});
                                 return;
                               }
                               if (_formKey.currentState!.validate()) {
                                 isLoading.value = true;
                                 Map<String, dynamic> params = {
                                   "product_id": selectedProduct!.id,
-                                  "location_ids": jsonEncode(selectedStores.map((e) => e.id).toList()),
+                                  "location_ids": jsonEncode(
+                                    selectedStores.map((e) => e.id).toList(),
+                                  ),
                                   "wholesale_price": _priceController.text,
                                   "store_price": _priceOnStoreController.text,
                                   "quantity": _quantityController.text,
@@ -352,6 +392,7 @@ class _NewDealState extends State<NewDeal> {
                       onPressed: () {
                         Get.toNamed(AppRoutes.addProduct);
                       },
+
                       child: Text("add_new_product".tr),
                     ),
                   ],

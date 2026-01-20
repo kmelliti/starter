@@ -95,13 +95,13 @@ class AuthService{
           "password": password,
         }),
       );
-      print("Data 1 ${response.data} ");
+
       if(response.data["result"] == false){
         throw ApiException(response.data["message"]);
       }
 
       appServices.setToken(response.data["token"]);
-      log("Prentable token ${appServices.getToken()}");
+
 
 
       return await getUser();

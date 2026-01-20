@@ -16,8 +16,8 @@ import '../manager/login_controller.dart';
 class LoginPage extends StatelessWidget {
    LoginPage({super.key});
 
-  final TextEditingController usernameController = TextEditingController(text: "souhaib1@gmail.com");
-  final TextEditingController passwordController = TextEditingController(text: "souhaib1");
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   final LoginController _loginController = getIt();
   final ValueNotifier<bool> isLoading = ValueNotifier(false);

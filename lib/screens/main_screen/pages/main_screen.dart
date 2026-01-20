@@ -6,6 +6,7 @@ import 'package:starter/screens/my_account/pages/my_account.dart';
 import 'package:starter/screens/new_deal/pages/new_deal.dart';
 
 import '../../../core/config/bottom_navigator.dart';
+import '../../../core/services/app_service.dart';
 import '../../home_page/pages/home_page.dart';
 
 
@@ -18,6 +19,8 @@ class MainScreen extends StatelessWidget {
   @override
 
   Widget build(BuildContext context) {
+    AppServices appServices = getIt();
+    print("Token : ${appServices.getToken()}");
     return Scaffold(
       body: ValueListenableBuilder(
         valueListenable:_controller. indexWidget,

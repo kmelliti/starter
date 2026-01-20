@@ -124,12 +124,49 @@ class MyAccountServices {
     }
   }
 
-  Future<void> addLocation(Map<String,dynamic> params) async {
+  Future<LocationModel> addLocation(Map<String,dynamic> params) async {
     try{
 
       final response = await _dio.post(
           'BorsaNow/public/api/v1/merchant/locations/add/${getLang()}',
           data: jsonEncode(params)
+      );
+      if(response.data["result"] == false){
+        throw ApiException(response.data["message"]);
+      }
+      return LocationModel.fromJson(response.data['data']);
+
+    }catch(e,s){
+      log("$e , $e");
+      rethrow;
+    }
+  }
+  Future<LocationModel> editLocation(Map<String,dynamic> params) async {
+    try{
+      log("Params $params");
+
+      final response = await _dio.put(
+          'BorsaNow/public/api/v1/merchant/locations/update/${getLang()}',
+          data: jsonEncode(params)
+      );
+      if(response.data["result"] == false){
+        throw ApiException(response.data["message"]);
+      }
+      return LocationModel.fromJson(response.data['data']);
+
+    }catch(e,s){
+      log("$e , $e");
+      rethrow;
+    }
+  }
+  Future<void> deleteLocation(int locationId) async {
+    try{
+
+      final response = await _dio.post(
+          'BorsaNow/public/api/v1/merchant/locations/delete/${getLang()}',
+          data: {
+            "merchant_location_id": locationId
+          }
       );
       if(response.data["result"] == false){
         throw ApiException(response.data["message"]);

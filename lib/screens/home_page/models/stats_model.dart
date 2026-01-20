@@ -22,10 +22,10 @@ class StatsModel {
   });
 
   factory StatsModel.fromJson(Map<String, dynamic> json) => StatsModel(
-    totalDeals: json["total_deals"],
-    totalProfits: json["total_profits"],
-    withdrawn: json["withdrawn"],
-    totalBalance: json["total_balance"],
+    totalDeals: json["total_deals"].toString(),
+    totalProfits: json["total_profits"].toString(),
+    withdrawn: json["withdrawn"].toString(),
+    totalBalance: json["total_balance"].toString(),
   );
 
   Map<String, dynamic> toJson() => {

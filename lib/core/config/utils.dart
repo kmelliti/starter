@@ -360,10 +360,10 @@ void showLogoutAlert(BuildContext context) {
             ),
             SizedBox(height: 20),
             TextButton(
-              onPressed: () {
+              onPressed: () async{
                 AuthService authService = getIt();
                 AppServices appServices = getIt();
-                authService.signOut();
+                await authService.signOut();
                 appServices.removeUserAndToken();
                 MainScreenController c = getIt();
                 c.indexWidget.value = 0;
@@ -457,6 +457,7 @@ AppBar buildAppBar([Function(String value)? onSearchSubmitted]) {
 
   final ValueNotifier<double> widthSearchBox = ValueNotifier(57);
   TextEditingController searchController = TextEditingController();
+  final AppServices appServices = getIt();
   return AppBar(
     backgroundColor: HexColor.fromHex(AppTheme.appBackGroundColor),
     elevation: 0,
@@ -470,12 +471,9 @@ AppBar buildAppBar([Function(String value)? onSearchSubmitted]) {
           opacity: value.clamp(0.0, 1.0),
           child: Transform.scale(
             scale: 0.5 + (value * 0.5),
-            child: Hero(
-              tag: "a2",
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREO17hg6KvLlweeZWN0LCEdi-OXM9qGpbQ9w&s",
-                ),
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(
+                "${baseUrlImage}/${appServices.getUser().merchant.picture}",
               ),
             ),
           ),
@@ -483,7 +481,7 @@ AppBar buildAppBar([Function(String value)? onSearchSubmitted]) {
       },
     ),
     actions: [
-      TweenAnimationBuilder<double>(
+      onSearchSubmitted == null?Container(): TweenAnimationBuilder<double>(
         tween: Tween(begin: 0.0, end: 1.0),
         duration: Duration(milliseconds: 300),
         curve: Curves.easeOutBack,

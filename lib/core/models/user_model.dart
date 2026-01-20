@@ -144,7 +144,7 @@ class Merchant {
     companyName: json["company_name"],
     picture: json["picture"] == null ? null : json["picture"],
     tradeLicenseNumber: json["trade_license_number"],
-    address: json["Address"],
+    address: json.containsKey("Address") ? json["Address"] : json["address"],
     taxCertificate: json["tax_certificate"],
     copyTradeLicense: json["copy_trade_license"],
     linkTiktok: json["link_tiktok"],

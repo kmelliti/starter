@@ -56,13 +56,12 @@ class DealServices {
 
       final response = await _dio.get(
         "BorsaNow/public/api/v1/merchant/deals/${getLang()}?page=$page",
-        queryParameters: filters,
+        queryParameters:filters== null? null: filters,
       );
 
       if (response.data["result"] == false) {
         throw Exception(response.data["message"]);
       }
-      log("Response deal ${response.data}");
       return dealModelFromJson(jsonEncode(response.data['data']['data']));
     } catch (e) {
       rethrow;

@@ -148,7 +148,14 @@ class AppTranslation extends Translations {
       'active': 'مفعل ',
       "status_deal":"حالة الصفقة",
       "cancelled":"ملغي",
-      "list_locations":"قائمة المواقع"
+      "list_locations":"قائمة المواقع",
+      "add_location":"أضف موقع",
+      "edit_location":"تعديل موقع",
+      "location_updated_successfully":"تم تعديل الموقع بنجاح",
+      "alert_delete_location":"هل أنت متأكد من أنك تريد حذف الموقع؟",
+      "no_keep":"لا أريد الحذف",
+      "no_data":"لا توجد بيانات"
+
     },
   };
 }

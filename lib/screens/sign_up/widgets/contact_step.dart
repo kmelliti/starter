@@ -65,145 +65,150 @@ class _ContactStepState extends State<ContactStep> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: Column(
-        children: [
-          SizedBox(height: 40),
-          TextFormField(
-            controller: _fullNameController,
-            decoration: InputDecoration(labelText: 'full_name'.tr),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'field_is_required'.tr;
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 20),
-          TextFormField(
-            controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-
-            decoration: InputDecoration(labelText: 'email'.tr),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'field_is_required'.tr;
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 20),
-          TextFormField(
-            controller: _phoneNumberController,
-            keyboardType: TextInputType.phone,
-            decoration: InputDecoration(labelText: 'phone_number'.tr),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'field_is_required'.tr;
-              }
-              if(!isValidSaudiPhone(value)){
-                return 'invalid_phone_number'.tr;
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 20),
-          TextFormField(
-            controller: _birthdayController,
-            keyboardType: TextInputType.datetime,
-            readOnly: true,
-            decoration: InputDecoration(
-              labelText: 'dob'.tr,
-              suffixIcon: Icon(
-                Icons.calendar_today_outlined,
-                color: HexColor.fromHex(AppTheme.primaryColor),
-              ),
-            ),
-            onTap: () async {
-              showDatePicker(
-                context: context,
-                initialDate: DateTime.now(),
-                firstDate: DateTime(1920),
-                lastDate: DateTime.now(),
-              ).then((value) {
-                if (value == null) {
-                  return;
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 40),
+            TextFormField(
+              controller: _fullNameController,
+              decoration: InputDecoration(labelText: 'full_name'.tr),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'field_is_required'.tr;
                 }
-                _birthdayController.text = df.format(value);
-              });
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'field_is_required'.tr;
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 20),
-          DropdownButtonFormField<String>(
-            decoration: InputDecoration(labelText: 'gender'.tr),
-            items: [
-              DropdownMenuItem(value: "male", child: Text('male'.tr)),
-              DropdownMenuItem(value: "female", child: Text('female'.tr)),
-            ],
-            onChanged: (value) {
-              _gender = value;
-            },
-            validator: (value) {
-              if (value == null) {
-                return 'field_is_required'.tr;
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 40),
-
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    widget.onBackStep();
-                  },
-                  style: AppTheme.outlinedButtonStyle,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.arrow_back),
-                      SizedBox(width: 10),
-                      Text('back'.tr),
-                    ],
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+        
+              decoration: InputDecoration(labelText: 'email'.tr),
+              validator: (value) {
+                if (value == null || value.isEmpty ) {
+                  return 'field_is_required'.tr;
+                }
+                if(!value.isEmail){
+                  return 'invalid_email'.tr;
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: _phoneNumberController,
+              keyboardType: TextInputType.phone,
+              decoration: InputDecoration(labelText: 'phone_number'.tr),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'field_is_required'.tr;
+                }
+                if(!isValidSaudiPhone(value)){
+                  return 'invalid_phone_number'.tr;
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: _birthdayController,
+              keyboardType: TextInputType.datetime,
+              readOnly: true,
+              decoration: InputDecoration(
+                labelText: 'dob'.tr,
+                suffixIcon: Icon(
+                  Icons.calendar_today_outlined,
+                  color: HexColor.fromHex(AppTheme.primaryColor),
+                ),
+              ),
+              onTap: () async {
+                showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(1920),
+                  lastDate: DateTime.now(),
+                ).then((value) {
+                  if (value == null) {
+                    return;
+                  }
+                  _birthdayController.text = df.format(value);
+                });
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'field_is_required'.tr;
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
+            DropdownButtonFormField<String>(
+              decoration: InputDecoration(labelText: 'gender'.tr),
+              items: [
+                DropdownMenuItem(value: "male", child: Text('male'.tr)),
+                DropdownMenuItem(value: "female", child: Text('female'.tr)),
+              ],
+              onChanged: (value) {
+                _gender = value;
+              },
+              validator: (value) {
+                if (value == null) {
+                  return 'field_is_required'.tr;
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 40),
+        
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      widget.onBackStep();
+                    },
+                    style: AppTheme.outlinedButtonStyle,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.arrow_back),
+                        SizedBox(width: 10),
+                        Text('back'.tr),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 50),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _signUpController.accountCreationParams.name =
-                          _fullNameController.text;
-
-                      _signUpController.accountCreationParams.birthday = df
-                          .parse(_birthdayController.text);
-
-                      _signUpController.accountCreationParams.email =
-                          _emailController.text;
-
-                      _signUpController.accountCreationParams.phone =
-                          _phoneNumberController.text;
-                      _signUpController.accountCreationParams.gender =
-                          _gender.toString();
-
-                      widget.onNextStep();
-                    }
-                  },
-                  child: Text('next'.tr),
+                const SizedBox(width: 50),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        _signUpController.accountCreationParams.name =
+                            _fullNameController.text;
+        
+                        _signUpController.accountCreationParams.birthday = df
+                            .parse(_birthdayController.text);
+        
+                        _signUpController.accountCreationParams.email =
+                            _emailController.text;
+        
+                        _signUpController.accountCreationParams.phone =
+                            _phoneNumberController.text;
+                        _signUpController.accountCreationParams.gender =
+                            _gender.toString();
+        
+                        widget.onNextStep();
+                      }
+                    },
+                    child: Text('next'.tr),
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 40),
-        ],
+              ],
+            ),
+            const SizedBox(height: 40),
+          ],
+        ),
       ),
     );
   }
