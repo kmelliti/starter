@@ -681,46 +681,46 @@ AppBar buildAppBarWithBack(BuildContext context) {
       ),
     ),
     actions: [
-      TweenAnimationBuilder<double>(
-        tween: Tween(begin: 0.0, end: 1.0),
-        duration: Duration(milliseconds: 600),
-        curve: Curves.easeOutBack,
-        builder: (context, value, child) {
-          return Transform.translate(
-            offset: Offset(0, (1 - value) * 20),
-            child: Opacity(
-              opacity: value.clamp(0.0, 1.0),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {},
-                  borderRadius: BorderRadius.circular(30),
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    padding: EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: HexColor.fromHex(AppTheme.borderGrey),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 5,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: SvgPicture.asset("assets/icons/search.svg"),
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
+      // TweenAnimationBuilder<double>(
+      //   tween: Tween(begin: 0.0, end: 1.0),
+      //   duration: Duration(milliseconds: 600),
+      //   curve: Curves.easeOutBack,
+      //   builder: (context, value, child) {
+      //     return Transform.translate(
+      //       offset: Offset(0, (1 - value) * 20),
+      //       child: Opacity(
+      //         opacity: value.clamp(0.0, 1.0),
+      //         child: Material(
+      //           color: Colors.transparent,
+      //           child: InkWell(
+      //             onTap: () {},
+      //             borderRadius: BorderRadius.circular(30),
+      //             child: Container(
+      //               width: 50,
+      //               height: 50,
+      //               padding: EdgeInsets.all(15),
+      //               decoration: BoxDecoration(
+      //                 color: Colors.white,
+      //                 shape: BoxShape.circle,
+      //                 border: Border.all(
+      //                   color: HexColor.fromHex(AppTheme.borderGrey),
+      //                 ),
+      //                 boxShadow: [
+      //                   BoxShadow(
+      //                     color: Colors.black.withOpacity(0.05),
+      //                     blurRadius: 5,
+      //                     offset: Offset(0, 2),
+      //                   ),
+      //                 ],
+      //               ),
+      //               child: SvgPicture.asset("assets/icons/search.svg"),
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //     );
+      //   },
+      // ),
       TweenAnimationBuilder<double>(
         tween: Tween(begin: 0.0, end: 1.0),
         duration: Duration(milliseconds: 800),

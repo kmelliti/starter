@@ -18,14 +18,13 @@ class SliderImages extends StatefulWidget {
 }
 
 class _SliderImagesState extends State<SliderImages> {
-  final GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
-  late final ValueNotifier<String> img;
+  late  ValueNotifier<String?> img = ValueNotifier(null);
 
   @override
   void initState() {
+    if(widget.pictures.isNotEmpty)
     img = ValueNotifier(widget.pictures.first.picture);
-    log(img.value);
     super.initState();
   }
 
@@ -132,7 +131,6 @@ class _SliderImagesState extends State<SliderImages> {
             shrinkWrap: true,
             padding: EdgeInsets.zero,
             scrollDirection: Axis.horizontal,
-            key: _listKey,
             itemCount: widget.pictures.length,
             itemBuilder: (context, index) {
               return ValueListenableBuilder(
