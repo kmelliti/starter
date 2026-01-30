@@ -1,37 +1,70 @@
+import 'dart:developer';
 import 'dart:ffi';
+
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:starter/core/di/di.dart';
 
-import '../screens/login/presentation/pages/login_page.dart';
 
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
+import '../core/config/app_constants.dart';
+import '../core/di/di.dart';
+import '../core/routes/app_routes.dart';
+import '../core/services/app_service.dart';
+import '../screens/products/controller/products_controller.dart';
+
+
+class SplashScreen extends StatefulWidget {
+  SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  final AppServices appServices = getIt();
+  final ProductController _productController = getIt();
+
+  @override
+  void initState() {
+
+    super.initState();
+
+
+    appServices.getBanks();
+    appServices.getCities();
+    appServices.getMerchantCategories();
+    _productController.getProductCategories();
+
+    bool isLoggedIn = appServices.getToken() != null;
+
+    Future.delayed(Duration(seconds: 4), () {
+      if (isLoggedIn) {
+        WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_) {
+         Get.offNamed(AppRoutes.mainScreen);
+
+        });
+      } else {
+        WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_) {
+          Get.offNamed(AppRoutes.login);
+        });
+      }
+
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: checkUser(),
-        builder: (context, snap) {
-          if(snap.hasData){
-            WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_){
-
-              Get.to(()=> LoginPage());
-            });
-          }
-          return Center(child: Text("Welcome"));
-        },
+      body: Center(
+        child: Image.asset(
+          "assets/0484aab0c5a24014f17a6bf62f729f73711ad0ed.gif",
+          height: 500,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
-
-  Future<bool?> checkUser() async {
-    final SharedPreferences prefs = getIt();
-    final bool isLogin = prefs.getBool('isLogin') ?? false;
-    await Future.delayed(Duration(seconds: 3));
-    return isLogin;
-  }
 }
+
+//git@github.com-giga:kmelliti/starter.git
